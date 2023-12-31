@@ -7,31 +7,63 @@ const preEls = document.querySelectorAll("pre");
   const url = chrome.runtime.getURL("/css/content-script.css");
   shadowRoot.innerHTML = `<link rel="stylesheet" href=${url} />`;
   // обворачиваем в шадов дом елемент (чтобы стили сайта не применялись к нашей кнопки)
-  const btn = document.createElement("button");
-  btn.innerText = "Copy";
-  btn.type = "button";
+  const copyBtn = document.createElement("button");
+  copyBtn.innerText = "Copy";
+  copyBtn.type = "button";
+  copyBtn.className = "copy";
 
-  shadowRoot.prepend(btn);
+  shadowRoot.prepend(copyBtn);
+
+  const saveBtn = document.createElement("button");
+  saveBtn.innerText = "Save";
+  saveBtn.type = "button";
+  saveBtn.className = "save";
+
+  shadowRoot.prepend(saveBtn);
+
   preEl.prepend(root);
 
-  // preEl.prepend(btn);
+  // preEl.prepend(copyBtn);
   // если без шадов дома и нам подойдут стили сайта
 
   const codeEl = preEl.querySelector("code");
 
-  btn.addEventListener("click", async () => {
+  copyBtn.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(codeEl.innerText);
-      notify();
+      notify("copy");
+    } catch (error) {
+      console.log(error);
+    }
+  });
+  const titleEl = document.querySelector(".question-hyperlink");
+
+  saveBtn.addEventListener("click", async () => {
+    try {
+      const code = codeEl.innerText;
+      const title = titleEl.innerText;
+      const link = window.location.href;
+      // console.log({ code, title, link });
+      notify("save");
     } catch (error) {
       console.log(error);
     }
   });
 });
 
-function notify() {
+function notify(type) {
   const scriptEl = document.createElement("script");
-  const url = chrome.runtime.getURL("/js/execute.js");
+  let url;
+  switch (type) {
+    case "save":
+      url = chrome.runtime.getURL("/js/notify/execute_save.js");
+      break;
+
+    default:
+      url = chrome.runtime.getURL("/js/notify/execute_copy.js");
+      break;
+  }
+
   scriptEl.src = url;
   document.body.appendChild(scriptEl);
   //  Добавляем скрипт в дом дерево
@@ -41,6 +73,7 @@ function notify() {
   };
   // как загрузился убираем его (чистим)
 }
+
 function getAllCode() {
   return [...preEls]
     .map(pr => {

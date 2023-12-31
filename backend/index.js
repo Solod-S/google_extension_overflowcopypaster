@@ -77,4 +77,46 @@ app.post("/", async (req, res) => {
   res.send("Successfully submitted! Thank you!");
 });
 
+app.delete("/", async (req, res) => {
+  const auth = new google.auth.GoogleAuth({
+    keyFile: "credentials.json",
+    scopes: "https://www.googleapis.com/auth/spreadsheets",
+  });
+
+  // Create client instance for auth
+  const client = await auth.getClient();
+
+  // Instance of Google Sheets API
+  const googleSheets = google.sheets({ version: "v4", auth: client });
+
+  const spreadsheetId = "1qBvrpEJugsnto-LT5VaazXCzKfVHPubrDbLO4baVaV8";
+
+  // Specify the sheetId and the start index and end index of the column you want to delete
+  const sheetId = 0; // assuming it's the first sheet, change it accordingly
+  const startIndex = 1; // assuming you want to delete the second column, change it accordingly
+  const endIndex = 2; // assuming you want to delete up to the second column, change it accordingly
+
+  // Build the request to delete the specified range of columns
+  const deleteRequest = {
+    deleteDimension: {
+      range: {
+        sheetId,
+        dimension: "COLUMNS",
+        startIndex,
+        endIndex,
+      },
+    },
+  };
+
+  // Execute the batchUpdate request
+  await googleSheets.spreadsheets.batchUpdate({
+    spreadsheetId,
+    resource: {
+      requests: [deleteRequest],
+    },
+  });
+
+  res.send("Column deleted successfully!");
+});
+
 app.listen(1337, (req, res) => console.log("running on 1337"));

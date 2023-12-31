@@ -1,16 +1,27 @@
 button {
-  position: absolute;
-  right: 12px;
-  top: 6px;
   padding: 0.5em;
-  background: #ffcc00;
-  color: #000;
+  font-weight: 700;
+  color: white;
+  background-color: #207cd8;
   border: none;
   border-radius: 3px;
   transition: background 0.15s ease-in-out;
   font-family: monospace;
+  cursor: pointer;
+}
+
+.copy {
+  position: absolute;
+  right: 12px;
+  top: 6px;
+}
+
+.save {
+  position: absolute;
+  right: 66px;
+  top: 6px;
 }
 
 button:hover {
-  background: #e6b800;
+  background-color: #155ca2;
 }
