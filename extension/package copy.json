@@ -14,12 +14,9 @@
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
-    "clipboard": "^2.0.11",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-icons": "^4.12.0",
-    "react-lottie": "^1.2.3",
-    "styled-components": "^6.1.6"
+    "react-lottie": "^1.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

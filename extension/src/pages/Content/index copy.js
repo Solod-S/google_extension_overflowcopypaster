@@ -14,20 +14,6 @@ function extractSheetIdFromUrl(url) {
   return match ? match[1] : null;
 }
 
-function getSpreadsheetUrl() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(['google-sheets-url'], (result) => {
-      const spreadsheetId = result['google-sheets-url'];
-      if (spreadsheetId) {
-        console.log(`spreadsheetId in fn`, spreadsheetId);
-        resolve(spreadsheetId);
-      } else {
-        reject(new Error('Spreadsheet ID not found in storage'));
-      }
-    });
-  });
-}
-
 const preEls = document.querySelectorAll('pre');
 [...preEls].forEach((preEl) => {
   const root = document.createElement('div');
@@ -78,15 +64,19 @@ const preEls = document.querySelectorAll('pre');
         currentDate.getMonth() + 1
       }.${currentDate.getFullYear()}`;
 
-      let spreadsheetId = await getSpreadsheetUrl();
-      console.log(
-        `extractSheetIdFromUrl(spreadsheetId)`,
-        extractSheetIdFromUrl(spreadsheetId)
-      );
+      let spreadsheetId;
+
+      chrome.storage.local.get(['google-sheets-url'], async (result) => {
+        console.log(result['google-sheets-url'], `result`);
+        spreadsheetId = await result['google-sheets-url'];
+      });
+
+      console.log(spreadsheetId, `spreadsheetId`);
+
       const values = [title, code, link, formattedDate];
 
       const requestBody = {
-        id: extractSheetIdFromUrl(spreadsheetId),
+        id: spreadsheetId,
         values,
       };
 

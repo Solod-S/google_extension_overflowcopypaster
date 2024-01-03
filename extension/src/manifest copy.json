@@ -4,7 +4,7 @@
   "name": "Stackoverflow Copypaster",
   "description": "Copy faster from stackoverflow",
   "options_page": "options.html",
-
+  "about_page": "about.html",
   "commands": {
     "copy-all": {
       "suggested_key": { "default": "Alt+Up" },
@@ -31,8 +31,20 @@
     }
   ],
   "devtools_page": "devtools.html",
-  "host_permissions": ["https://stackoverflow.com/*"],
-  "permissions": ["storage"],
+  "host_permissions": [
+    "https://stackoverflow.com/*",
+    "https://accounts.google.com/*"
+  ],
+  "permissions": ["identity", "scripting", "storage"],
+  "oauth2": {
+    "client_id": "617516811579-nrre6b2nq6uim4cuotgd9fuac4g72gua.apps.googleusercontent.com",
+    "scopes": ["https://www.googleapis.com/auth/spreadsheets"]
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'",
+    "script-src": ["self", "https://accounts.google.com"],
+    "script-src-elem": ["self", "https://accounts.google.com"]
+  },
   "web_accessible_resources": [
     {
       "resources": [

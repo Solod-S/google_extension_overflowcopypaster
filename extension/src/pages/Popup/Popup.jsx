@@ -1,28 +1,87 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from '../../assets/img/logo.jpeg';
+import secrets from 'secrets';
 import './Popup.css';
 
+import useChromeStorage from '../Content/hooks/useChromeStorage';
+const { docExempleUrl, sheetsEditor } = secrets;
+
 const Popup = () => {
+  const [copied, setCopied] = useState(false);
+  const [
+    googleSheetsUrl,
+    setGoogleSheetsUrl,
+    { loading: googleSheetsUrlLoading },
+  ] = useChromeStorage('google-sheets-url', '');
+
+  const handleCopyButtonClick = () => {
+    const textarea = document.createElement('textarea');
+    textarea.value = sheetsEditor;
+    document.body.appendChild(textarea);
+
+    textarea.select();
+    document.execCommand('copy');
+
+    document.body.removeChild(textarea);
+
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 3000);
+  };
+
   return (
     <>
-      <h2>Stackoverflow saver</h2>
+      <h2>How to use?</h2>
       <img src={logo} alt="Staleks Tools Logo" width="80%" />
-
-      <p>
-        This application is designed to help you efficiently save code snippets,
-        titles, and links from Stack Overflow directly to your Google Sheets.
-      </p>
-      <b></b>
-      <p>
-        Check out the project on GitHub:
-        <a
-          href="https://github.com/Solod-S/google_extension_overflowcopypaster"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Staleks Tools on GitHub
-        </a>
-      </p>
+      <ol>
+        <li>
+          Create a Google spreadsheet based on the{' '}
+          <a href={docExempleUrl} target="_blank" rel="noreferrer">
+            sample
+          </a>
+        </li>
+        <li>
+          Add user + give him editor permission{' '}
+          <button onClick={handleCopyButtonClick}>Copy user</button>
+          {copied && (
+            <span
+              style={{
+                marginLeft: '10px',
+                color: 'green',
+                display: 'block',
+                textAlign: 'center',
+                padding: '5px',
+              }}
+            >
+              Copied to clipboard!
+            </span>
+          )}
+        </li>
+        <li>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <label
+              htmlFor="url"
+              style={{
+                marginBottom: '4px',
+              }}
+            >
+              Enter your Google spreadsheet url
+            </label>
+            <input
+              type="text"
+              id="url"
+              placeholder="https://docs..."
+              value={googleSheetsUrl}
+              disabled={googleSheetsUrlLoading}
+              onChange={(e) => {
+                setGoogleSheetsUrl(e.target.value);
+              }}
+            />
+          </div>
+        </li>
+      </ol>
     </>
   );
 };

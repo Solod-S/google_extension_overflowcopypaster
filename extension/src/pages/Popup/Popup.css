@@ -1,9 +1,11 @@
 body {
+  font-family: 'Roboto', sans-serif;
   text-align: center;
-  width: 200px;
+  min-width: 300px;
+  padding: 20px;
 }
 
-button {
+/* button {
   margin-bottom: 5px;
   width: 100%;
   color: white;
@@ -17,8 +19,15 @@ button {
 }
 button:hover {
   background: linear-gradient(#393939, #ca2e2b);
-}
+} */
 
 img {
+  margin-bottom: 5px;
+}
+ol {
+  text-align: left;
+  padding: 20px;
+}
+li:not(:last-child) {
   margin-bottom: 5px;
 }
