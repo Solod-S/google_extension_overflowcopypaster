@@ -1,5 +1,6 @@
 import { printLine } from './modules/print';
 import secrets from 'secrets';
+import { Notyf } from 'notyf';
 
 console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
@@ -7,11 +8,26 @@ console.log('Must reload extension for modifications to take effect.');
 printLine("Using the 'printLine' function from the Print Module");
 
 const { serverUrl } = secrets;
+export let notyf = new Notyf();
 
 function extractSheetIdFromUrl(url) {
   const match = url.match(/\/spreadsheets\/d\/([^/]+)/);
 
   return match ? match[1] : null;
+}
+
+function getSpreadsheetUrl() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.get(['google-sheets-url'], (result) => {
+      const spreadsheetId = result['google-sheets-url'];
+      if (spreadsheetId) {
+        console.log(`spreadsheetId in fn`, spreadsheetId);
+        resolve(spreadsheetId);
+      } else {
+        reject(new Error('Spreadsheet ID not found in storage'));
+      }
+    });
+  });
 }
 
 const preEls = document.querySelectorAll('pre');
@@ -47,7 +63,7 @@ const preEls = document.querySelectorAll('pre');
   copyBtn.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(codeEl.innerText);
-      notify('copy');
+      overflowNotify('copy');
     } catch (error) {
       console.log(error);
     }
@@ -63,20 +79,17 @@ const preEls = document.querySelectorAll('pre');
       const formattedDate = `${currentDate.getDate()}.${
         currentDate.getMonth() + 1
       }.${currentDate.getFullYear()}`;
-
-      let spreadsheetId;
-
-      chrome.storage.local.get(['google-sheets-url'], async (result) => {
-        console.log(result['google-sheets-url'], `result`);
-        spreadsheetId = await result['google-sheets-url'];
-      });
-
-      console.log(spreadsheetId, `spreadsheetId`);
-
+      console.log(notyf);
+      notyf.error(`ERRR`);
+      let spreadsheetId = await getSpreadsheetUrl();
+      console.log(
+        `extractSheetIdFromUrl(spreadsheetId)`,
+        extractSheetIdFromUrl(spreadsheetId)
+      );
       const values = [title, code, link, formattedDate];
 
       const requestBody = {
-        id: spreadsheetId,
+        id: extractSheetIdFromUrl(spreadsheetId),
         values,
       };
 
@@ -87,18 +100,23 @@ const preEls = document.querySelectorAll('pre');
         },
         body: JSON.stringify(requestBody),
       });
+      const responseData = await response.json();
 
-      if (!response.ok) {
+      // console.log(responseData);
+      console.log(`responseData`, responseData);
+
+      if (!response.ok || !response) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      notify('copy');
+      overflowNotify('copy');
     } catch (error) {
+      notify('error', error.message);
       console.log(error);
     }
   });
 });
 
-function notify(type) {
+function overflowNotify(type) {
   const scriptEl = document.createElement('script');
   let url;
   switch (type) {
@@ -121,6 +139,26 @@ function notify(type) {
   // как загрузился убираем его (чистим)
 }
 
+export const notify = (type, msg) => {
+  console.log(`notify`);
+  if (type === 'error') {
+    console.log(`notify2`);
+    notyf?.error({
+      duration: 3000,
+      dismissible: true,
+      message: msg,
+      ripple: false,
+    });
+  } else {
+    notyf?.success({
+      duration: 3000,
+      dismissible: true,
+      message: msg,
+      ripple: false,
+    });
+  }
+};
+
 function getAllCode() {
   return [...preEls]
     .map((pr) => {
@@ -135,7 +173,7 @@ chrome.runtime.onMessage.addListener(async (request, info, sendResponse) => {
     const allCode = getAllCode();
     sendResponse(allCode);
     navigator.clipboard.writeText(allCode).then(() => {
-      notify();
+      overflowNotify();
       // sendResponse(allCode);
     });
     return true;

@@ -1,32 +1,11 @@
-import { printLine } from './modules/print';
-import secrets from 'secrets';
+import { saveDataToGoogleSheets } from '../../utils/shared';
+import { Notyf } from 'notyf';
+import 'notyf/notyf.min.css';
 
 console.log('Content script works!');
 console.log('Must reload extension for modifications to take effect.');
 
-printLine("Using the 'printLine' function from the Print Module");
-
-const { serverUrl } = secrets;
-
-function extractSheetIdFromUrl(url) {
-  const match = url.match(/\/spreadsheets\/d\/([^/]+)/);
-
-  return match ? match[1] : null;
-}
-
-function getSpreadsheetUrl() {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.get(['google-sheets-url'], (result) => {
-      const spreadsheetId = result['google-sheets-url'];
-      if (spreadsheetId) {
-        console.log(`spreadsheetId in fn`, spreadsheetId);
-        resolve(spreadsheetId);
-      } else {
-        reject(new Error('Spreadsheet ID not found in storage'));
-      }
-    });
-  });
-}
+export let notyf = new Notyf();
 
 const preEls = document.querySelectorAll('pre');
 [...preEls].forEach((preEl) => {
@@ -53,19 +32,17 @@ const preEls = document.querySelectorAll('pre');
 
   preEl.prepend(root);
 
-  // preEl.prepend(copyBtn);
-  // если без шадов дома и нам подойдут стили сайта
-
   const codeEl = preEl.querySelector('code');
 
   copyBtn.addEventListener('click', async () => {
     try {
       await navigator.clipboard.writeText(codeEl.innerText);
-      notify('copy');
+      overflowNotify('copy');
     } catch (error) {
       console.log(error);
     }
   });
+
   const titleEl = document.querySelector('.question-hyperlink');
 
   saveBtn.addEventListener('click', async () => {
@@ -78,37 +55,16 @@ const preEls = document.querySelectorAll('pre');
         currentDate.getMonth() + 1
       }.${currentDate.getFullYear()}`;
 
-      let spreadsheetId = await getSpreadsheetUrl();
-      console.log(
-        `extractSheetIdFromUrl(spreadsheetId)`,
-        extractSheetIdFromUrl(spreadsheetId)
-      );
-      const values = [title, code, link, formattedDate];
+      await saveDataToGoogleSheets(title, code, link, formattedDate);
 
-      const requestBody = {
-        id: extractSheetIdFromUrl(spreadsheetId),
-        values,
-      };
-
-      const response = await fetch(`${serverUrl}/google-sheets/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      notify('copy');
+      overflowNotify('save');
     } catch (error) {
       console.log(error);
     }
   });
 });
 
-function notify(type) {
+function overflowNotify(type) {
   const scriptEl = document.createElement('script');
   let url;
   switch (type) {
@@ -145,7 +101,7 @@ chrome.runtime.onMessage.addListener(async (request, info, sendResponse) => {
     const allCode = getAllCode();
     sendResponse(allCode);
     navigator.clipboard.writeText(allCode).then(() => {
-      notify();
+      overflowNotify();
       // sendResponse(allCode);
     });
     return true;

@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
-import logo from '../../assets/img/logo.jpeg';
+// import logo from '../../assets/img/logo.jpeg';
+import Lottie from 'react-lottie';
 import secrets from 'secrets';
 import './Popup.css';
-
+import animationData from '../../assets/img/animation.json';
 import useChromeStorage from '../Content/hooks/useChromeStorage';
 const { docExempleUrl, sheetsEditor } = secrets;
+
+const defaultOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: animationData,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice',
+  },
+};
 
 const Popup = () => {
   const [copied, setCopied] = useState(false);
@@ -34,7 +44,8 @@ const Popup = () => {
   return (
     <>
       <h2>How to use?</h2>
-      <img src={logo} alt="Staleks Tools Logo" width="80%" />
+      {/* <img src={logo} alt="Staleks Tools Logo" width="80%" /> */}
+      <Lottie options={defaultOptions} height={300} width={300} />
       <ol>
         <li>
           Create a Google spreadsheet based on the{' '}
