@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import Lottie from 'react-lottie';
 import secrets from 'secrets';
 import './Popup.css';
-import animationData from '../../assets/img/animation.json';
+import animationData from '../../assets/img/animation_logo.json';
 import useChromeStorage from '../Content/hooks/useChromeStorage';
 const { docExempleUrl, sheetsEditor } = secrets;
 
@@ -45,7 +45,7 @@ const Popup = () => {
     <>
       <h2>How to use?</h2>
       {/* <img src={logo} alt="Staleks Tools Logo" width="80%" /> */}
-      <Lottie options={defaultOptions} height={300} width={300} />
+      <Lottie options={defaultOptions} height={100} width={100} />
       <ol>
         <li>
           Create a Google spreadsheet based on the{' '}
@@ -56,19 +56,6 @@ const Popup = () => {
         <li>
           Add user + give him editor permission{' '}
           <button onClick={handleCopyButtonClick}>Copy user</button>
-          {copied && (
-            <span
-              style={{
-                marginLeft: '10px',
-                color: 'green',
-                display: 'block',
-                textAlign: 'center',
-                padding: '5px',
-              }}
-            >
-              Copied to clipboard!
-            </span>
-          )}
         </li>
         <li>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -90,6 +77,22 @@ const Popup = () => {
                 setGoogleSheetsUrl(e.target.value);
               }}
             />
+            {copied && (
+              <span
+                style={{
+                  color: '#F48024',
+                  display: 'block',
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  position: 'absolute',
+                  bottom: '10px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                }}
+              >
+                Copied to clipboard!
+              </span>
+            )}
           </div>
         </li>
       </ol>

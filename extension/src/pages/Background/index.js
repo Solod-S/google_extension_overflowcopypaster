@@ -10,6 +10,15 @@ console.log('Put the background scripts here.');
 //   });
 // });
 
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') {
+    const url = chrome.runtime.getURL('./about.html');
+    chrome.tabs.create({
+      url,
+    });
+  }
+});
+
 async function getCurrentTabId() {
   let queryOptions = { active: true, lastFocusedWindow: true };
   // `tab` will either be a `tabs.Tab` instance or `undefined`.

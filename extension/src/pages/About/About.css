@@ -35,3 +35,25 @@
 .about-features-item:not(:last-child) {
   margin-bottom: 5px;
 }
+
+.about-animation {
+  position: absolute;
+  width: 500px;
+  top: 35px;
+  right: 90px;
+  border: 1px solid;
+  color: #c5bebb;
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.about-animation::after {
+  content: '';
+  display: block;
+  position: absolute;
+  right: 75px;
+  top: -15px;
+  border-bottom: 15px solid #c5bebb;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+}

@@ -3,6 +3,7 @@ import { useLayoutEffect } from 'react';
 import Lottie from 'react-lottie';
 import './About.css';
 import './Intro.css';
+import animation from '../../assets/img/animation.gif';
 
 import {
   GithubIcon,
@@ -113,6 +114,9 @@ const About = () => {
       </div>
       <div className="animation-container">
         <Lottie options={defaultOptions} height={400} width={400} />
+      </div>
+      <div className="about-animation">
+        <img src={animation} alt="how to instal animation" width="100%" />
       </div>
     </div>
   );
