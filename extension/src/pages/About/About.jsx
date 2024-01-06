@@ -23,6 +23,7 @@ const About = () => {
       preserveAspectRatio: 'xMidYMid slice',
     },
   };
+
   useLayoutEffect(() => {
     let intro = document.querySelector('.intro');
     // let logo = document.querySelector('.logo-header');
@@ -116,7 +117,12 @@ const About = () => {
         <Lottie options={defaultOptions} height={400} width={400} />
       </div>
       <div className="about-animation">
-        <img src={animation} alt="how to instal animation" width="100%" />
+        <img
+          src={animation}
+          alt="how to instal animation"
+          width="100%"
+          className="about-animation-item"
+        />
       </div>
     </div>
   );

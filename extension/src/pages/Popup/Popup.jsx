@@ -5,7 +5,7 @@ import secrets from 'secrets';
 import './Popup.css';
 import animationData from '../../assets/img/animation_logo.json';
 import useChromeStorage from '../Content/hooks/useChromeStorage';
-const { docExempleUrl, sheetsEditor } = secrets;
+const { docExempleUrl, imgExempleURL, sheetsEditor } = secrets;
 
 const defaultOptions = {
   loop: true,
@@ -51,12 +51,18 @@ const Popup = () => {
           Create a Google spreadsheet based on the{' '}
           <a href={docExempleUrl} target="_blank" rel="noreferrer">
             sample
+          </a>{' '}
+          (
+          <a href={imgExempleURL} target="_blank" rel="noreferrer">
+            img discriptions
           </a>
+          )
         </li>
         <li>
           Add user + give him editor permission{' '}
           <button onClick={handleCopyButtonClick}>Copy user</button>
         </li>
+
         <li>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <label

@@ -44,7 +44,10 @@
   border: 1px solid;
   color: #c5bebb;
   border-radius: 22px;
-  overflow: hidden;
+  /* overflow: hidden; */
+}
+.about-animation-item {
+  border-radius: 22px;
 }
 
 .about-animation::after {
