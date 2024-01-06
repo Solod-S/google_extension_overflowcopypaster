@@ -17,6 +17,8 @@ titles and links from Stack Overflow directly to your Google Sheets.
 
 ## Features and Fuctionality
 
+![Stackoverflow saver](./redmi_assets/Stackoverflow-Copypaster.gif)
+
 - Add copy button to DOM elements (copy code to clipboard)
 - Add save button to DOM elements (save code, title link and date to Google Sheets)
 
